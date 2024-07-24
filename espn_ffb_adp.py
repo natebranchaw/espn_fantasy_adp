@@ -1,5 +1,6 @@
 import time 
 import pandas as pd 
+import numpy as np
 from selenium import webdriver 
 from selenium.webdriver import Chrome 
 from selenium.webdriver.chrome.service import Service 
@@ -10,8 +11,7 @@ from bs4 import BeautifulSoup
 
 def get_espn_fantasy_football_adp(pages_to_scrape:int):
     '''Takes as input the number of pages you wish to scrape from ESPN's ADP (Average Draft Position) Live Results.
-    Returns a dataframe with the columns: Player, Team, Position, and ADP'''
-    
+    Returns a dataframe with the columns: Player, Team, Position, ADP, and average draft round for 12, 10, and 8 team leagues'''
     
     espn_url = 'https://fantasy.espn.com/football/livedraftresults'
     player_list = []
@@ -38,7 +38,8 @@ def get_espn_fantasy_football_adp(pages_to_scrape:int):
     driver.get(espn_url)
    
     time.sleep(2)
-
+    
+    #Find the next button to advance to the next page of data
     next_page_button = driver.find_element(By.XPATH, '//*[@id="fitt-analytics"]/div/div[5]/div[2]/div[2]/div/div/div/div[3]/nav/button[2]')
 
     #Loop through the first seven pages of projections
@@ -63,19 +64,24 @@ def get_espn_fantasy_football_adp(pages_to_scrape:int):
         #Loop over all span elements with the class jsx-2810852873 table--cell sortedAscending adp tar sortable for player adp and append to adp list
         for adp in soup.find_all('div', {'class': 'jsx-2810852873 table--cell sortedAscending adp tar sortable'}):
             adp_list.append(adp.text)
-                
-        next_page_button.send_keys(Keys.END)
-        
-        time.sleep(1)
-        
+            
+        #Click on the next page arrow
         next_page_button.click()
         
+        #Increase the page to the next loaded page
         page = page + 1
         
         time.sleep(4)
         
     driver.quit()
     
+    #Combine lists to create final dataframe
     adp_df = pd.DataFrame({'Player': player_list, 'Team': team_list, 'Position': pos_list, 'ADP': adp_list})
+    adp_df['ADP'] = adp_df['ADP'].astype('float')
+    
+    #Create average round drafted for 12, 10, and 8 team leagues
+    adp_df['Round-12'] = np.ceil(adp_df['ADP'] / 12)
+    adp_df['Round-10'] = np.ceil(adp_df['ADP'] / 10)
+    adp_df['Round-8'] = np.ceil(adp_df['ADP'] / 8)
         
     return adp_df    
