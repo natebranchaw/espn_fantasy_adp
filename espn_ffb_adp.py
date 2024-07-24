@@ -9,6 +9,9 @@ from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 
 def get_espn_fantasy_football_adp(pages_to_scrape:int):
+    '''Takes as input the number of pages you wish to scrape from ESPN's ADP (Average Draft Position) Live Results.
+    Returns a dataframe with the columns: Player, Team, Position, and ADP'''
+    
     
     espn_url = 'https://fantasy.espn.com/football/livedraftresults'
     player_list = []
