@@ -42,5 +42,3 @@ def get_espn_fantasy_football_adp(year, num_players = 500):
     espn_rankings = pd.concat(ranking_list)
     
     return espn_rankings
-
-x = get_espn_fantasy_football_adp(2024)
