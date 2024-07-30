@@ -1,2 +1,2 @@
-# espn_fantasy_football_adp
-Scrape Fantasy Football ADP (Average Draft Position) and PPR rankings from ESPN utilizing the ESPN API endpoint
+# espn_fantasy_adp
+Scrape Fantasy sport ADPs (Average Draft Position) rankings from ESPN utilizing the ESPN API endpoint
